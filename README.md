@@ -27,7 +27,7 @@ Or install the package and then run it
 
 ```bash
 npm install --save @rebase-blog/ts-json-schema-generator
-./node_modules/.bin/ts-json-schema-generator --path 'my/project/**/*.ts' --type 'My.Type.Name'
+./node_modules/.bin/schema --path 'my/project/**/*.ts' --type 'My.Type.Name'
 ```
 
 Note that different platforms (e.g. Windows) may use different path separators so you may have to adjust the command above.
