@@ -1,5 +1,5 @@
 {
-  "name": "@rebase-blog/ts-json-schema-generator",
+  "name": "@rebase.blog/ts-json-schema-generator",
   "version": "2.0.0",
   "description": "Generate JSON schema from your Typescript sources",
   "type": "module",
