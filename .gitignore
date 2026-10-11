@@ -1,11 +1,6 @@
 node_modules
 .DS_Store
-src/*.js
 dist
 coverage
-/.idea/
 .env
-
-# Other package managers
-pnpm-lock.yaml
-yarn.lock
+bin
