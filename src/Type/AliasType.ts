@@ -1,18 +1,18 @@
-import { BaseType } from "./BaseType.js";
+import { BaseType } from './BaseType.js'
 
 export class AliasType extends BaseType {
-    public constructor(
-        private id: string,
-        private type: BaseType,
+    public constructor (
+        private id:string,
+        private type:BaseType,
     ) {
-        super();
+        super()
     }
 
-    public getId(): string {
-        return this.id;
+    public getId ():string {
+        return this.id
     }
 
-    public getType(): BaseType {
-        return this.type;
+    public getType ():BaseType {
+        return this.type
     }
 }

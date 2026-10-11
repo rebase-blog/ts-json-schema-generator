@@ -1,67 +1,67 @@
-import type { PropertyName } from "typescript";
-import ts from "typescript";
-import type { Context, NodeParser } from "../NodeParser.js";
-import type { SubNodeParser } from "../SubNodeParser.js";
-import { ArrayType } from "../Type/ArrayType.js";
-import type { BaseType } from "../Type/BaseType.js";
-import { NeverType } from "../Type/NeverType.js";
-import { ObjectProperty, ObjectType } from "../Type/ObjectType.js";
-import type { ReferenceType } from "../Type/ReferenceType.js";
-import { isNodeHidden } from "../Utils/isHidden.js";
-import { isPublic, isStatic } from "../Utils/modifiers.js";
-import { getKey } from "../Utils/nodeKey.js";
+import type { PropertyName } from 'typescript'
+import ts from 'typescript'
+import type { Context, NodeParser } from '../NodeParser.js'
+import type { SubNodeParser } from '../SubNodeParser.js'
+import { ArrayType } from '../Type/ArrayType.js'
+import type { BaseType } from '../Type/BaseType.js'
+import { NeverType } from '../Type/NeverType.js'
+import { ObjectProperty, ObjectType } from '../Type/ObjectType.js'
+import type { ReferenceType } from '../Type/ReferenceType.js'
+import { isNodeHidden } from '../Utils/isHidden.js'
+import { isPublic, isStatic } from '../Utils/modifiers.js'
+import { getKey } from '../Utils/nodeKey.js'
 
 export class InterfaceAndClassNodeParser implements SubNodeParser {
-    public constructor(
-        protected typeChecker: ts.TypeChecker,
-        protected childNodeParser: NodeParser,
-        protected readonly additionalProperties: boolean,
+    public constructor (
+        protected typeChecker:ts.TypeChecker,
+        protected childNodeParser:NodeParser,
+        protected readonly additionalProperties:boolean,
     ) {}
 
-    public supportsNode(node: ts.InterfaceDeclaration | ts.ClassDeclaration): boolean {
-        return node.kind === ts.SyntaxKind.InterfaceDeclaration || node.kind === ts.SyntaxKind.ClassDeclaration;
+    public supportsNode (node:ts.InterfaceDeclaration|ts.ClassDeclaration):boolean {
+        return node.kind === ts.SyntaxKind.InterfaceDeclaration || node.kind === ts.SyntaxKind.ClassDeclaration
     }
 
-    public createType(
-        node: ts.InterfaceDeclaration | ts.ClassDeclaration,
-        context: Context,
-        reference?: ReferenceType,
-    ): BaseType {
+    public createType (
+        node:ts.InterfaceDeclaration|ts.ClassDeclaration,
+        context:Context,
+        reference?:ReferenceType,
+    ):BaseType {
         if (node.typeParameters?.length) {
             node.typeParameters.forEach((typeParam) => {
-                const nameSymbol = this.typeChecker.getSymbolAtLocation(typeParam.name)!;
-                context.pushParameter(nameSymbol.name);
+                const nameSymbol = this.typeChecker.getSymbolAtLocation(typeParam.name)!
+                context.pushParameter(nameSymbol.name)
 
                 if (typeParam.default) {
-                    const type = this.childNodeParser.createType(typeParam.default, context);
-                    context.setDefault(nameSymbol.name, type);
+                    const type = this.childNodeParser.createType(typeParam.default, context)
+                    context.setDefault(nameSymbol.name, type)
                 }
-            });
+            })
         }
 
-        const id = this.getTypeId(node, context);
+        const id = this.getTypeId(node, context)
         if (reference) {
-            reference.setId(id);
-            reference.setName(id);
+            reference.setId(id)
+            reference.setName(id)
         }
 
-        const properties = this.getProperties(node, context);
+        const properties = this.getProperties(node, context)
 
         if (properties === undefined) {
-            return new NeverType();
+            return new NeverType()
         }
 
-        const additionalProperties = this.getAdditionalProperties(node, context);
+        const additionalProperties = this.getAdditionalProperties(node, context)
 
         // When type only extends Array or ReadonlyArray then create an array type instead of an object type
         if (properties.length === 0 && additionalProperties === false) {
-            const arrayItemType = this.getArrayItemType(node);
+            const arrayItemType = this.getArrayItemType(node)
             if (arrayItemType) {
-                return new ArrayType(this.childNodeParser.createType(arrayItemType, context));
+                return new ArrayType(this.childNodeParser.createType(arrayItemType, context))
             }
         }
 
-        return new ObjectType(id, this.getBaseTypes(node, context), properties, additionalProperties);
+        return new ObjectType(id, this.getBaseTypes(node, context), properties, additionalProperties)
     }
 
     /**
@@ -71,82 +71,82 @@ export class InterfaceAndClassNodeParser implements SubNodeParser {
      * @param node - The interface or class to check.
      * @return The array item type if node is an array, null otherwise.
      */
-    protected getArrayItemType(node: ts.InterfaceDeclaration | ts.ClassDeclaration): ts.TypeNode | null {
+    protected getArrayItemType (node:ts.InterfaceDeclaration|ts.ClassDeclaration):ts.TypeNode|null {
         if (node.heritageClauses && node.heritageClauses.length === 1) {
-            const clause = node.heritageClauses[0];
+            const clause = node.heritageClauses[0]
             if (clause.types.length === 1) {
-                const type = clause.types[0];
-                const symbol = this.typeChecker.getSymbolAtLocation(type.expression);
-                if (symbol && (symbol.name === "Array" || symbol.name === "ReadonlyArray")) {
-                    const typeArguments = type.typeArguments;
+                const type = clause.types[0]
+                const symbol = this.typeChecker.getSymbolAtLocation(type.expression)
+                if (symbol && (symbol.name === 'Array' || symbol.name === 'ReadonlyArray')) {
+                    const typeArguments = type.typeArguments
                     if (typeArguments?.length === 1) {
-                        return typeArguments[0];
+                        return typeArguments[0]
                     }
                 }
             }
         }
-        return null;
+        return null
     }
 
-    protected getBaseTypes(node: ts.InterfaceDeclaration | ts.ClassDeclaration, context: Context): BaseType[] {
+    protected getBaseTypes (node:ts.InterfaceDeclaration|ts.ClassDeclaration, context:Context):BaseType[] {
         if (!node.heritageClauses) {
-            return [];
+            return []
         }
 
         return node.heritageClauses.reduce(
-            (result: BaseType[], baseType) => [
+            (result:BaseType[], baseType) => [
                 ...result,
                 ...baseType.types.map((expression) => this.childNodeParser.createType(expression, context)),
             ],
             [],
-        );
+        )
     }
 
-    protected getProperties(
-        node: ts.InterfaceDeclaration | ts.ClassDeclaration,
-        context: Context,
-    ): ObjectProperty[] | undefined {
-        let hasRequiredNever = false;
+    protected getProperties (
+        node:ts.InterfaceDeclaration|ts.ClassDeclaration,
+        context:Context,
+    ):ObjectProperty[]|undefined {
+        let hasRequiredNever = false
 
-        type Member = ts.PropertyDeclaration | ts.PropertySignature | ts.ParameterPropertyDeclaration;
+        type Member = ts.PropertyDeclaration|ts.PropertySignature|ts.ParameterPropertyDeclaration
 
-        const properties = (node.members as ts.NodeArray<ts.TypeElement | ts.ClassElement>)
+        const properties = (node.members as ts.NodeArray<ts.TypeElement|ts.ClassElement>)
             .reduce((members, member) => {
                 if (ts.isConstructorDeclaration(member)) {
                     const params = member.parameters.filter((param) =>
                         ts.isParameterPropertyDeclaration(param, param.parent),
-                    );
-                    members.push(...params);
+                    )
+                    members.push(...params)
                 } else if (ts.isPropertySignature(member) || ts.isPropertyDeclaration(member)) {
-                    members.push(member);
+                    members.push(member)
                 }
-                return members;
+                return members
             }, [] as Member[])
             .filter((member) => isPublic(member) && !isStatic(member) && !isNodeHidden(member))
-            .reduce<{ member: Member; memberType: ts.Node }[]>((entries, member) => {
-                let memberType: ts.Node | undefined = member.type;
+            .reduce<{ member:Member; memberType:ts.Node }[]>((entries, member) => {
+                let memberType:ts.Node|undefined = member.type
 
                 // Use the type checker if the member has no explicit type
                 // Ignore members without an initializer. They have no useful type.
                 if (memberType === undefined && (member as ts.PropertyDeclaration)?.initializer !== undefined) {
-                    const type = this.typeChecker.getTypeAtLocation(member);
-                    memberType = this.typeChecker.typeToTypeNode(type, node, ts.NodeBuilderFlags.NoTruncation);
+                    const type = this.typeChecker.getTypeAtLocation(member)
+                    memberType = this.typeChecker.typeToTypeNode(type, node, ts.NodeBuilderFlags.NoTruncation)
 
                     // `typeToTypeNode` returns a node that is detached from the AST, so
                     // `AnnotatedNodeParser` cannot walk up to the member to read its JSDoc.
                     // Point the synthesized node at the original declaration so annotations
                     // such as the property description are preserved. See #1531.
                     if (memberType) {
-                        //@ts-expect-error - parent is readonly in the public typings
-                        memberType.parent = member;
+                        // @ts-expect-error - parent is readonly in the public typings
+                        memberType.parent = member
                     }
                 }
 
                 if (memberType !== undefined) {
-                    entries.push({ member, memberType });
+                    entries.push({ member, memberType })
                 }
 
-                return entries;
+                return entries
             }, [])
             .map(
                 ({ member, memberType }) =>
@@ -157,44 +157,44 @@ export class InterfaceAndClassNodeParser implements SubNodeParser {
                     ),
             )
             .filter((prop) => {
-                const type = prop.getType();
+                const type = prop.getType()
                 if (prop.isRequired() && type instanceof NeverType) {
-                    hasRequiredNever = true;
+                    hasRequiredNever = true
                 }
-                return !(type instanceof NeverType);
-            });
+                return !(type instanceof NeverType)
+            })
 
         if (hasRequiredNever) {
-            return undefined;
+            return undefined
         }
 
-        return properties;
+        return properties
     }
 
-    protected getAdditionalProperties(
-        node: ts.InterfaceDeclaration | ts.ClassDeclaration,
-        context: Context,
-    ): BaseType | boolean {
-        const indexSignature = (node.members as ts.NodeArray<ts.NamedDeclaration>).find(ts.isIndexSignatureDeclaration);
+    protected getAdditionalProperties (
+        node:ts.InterfaceDeclaration|ts.ClassDeclaration,
+        context:Context,
+    ):BaseType|boolean {
+        const indexSignature = (node.members as ts.NodeArray<ts.NamedDeclaration>).find(ts.isIndexSignatureDeclaration)
         if (!indexSignature) {
-            return this.additionalProperties;
+            return this.additionalProperties
         }
 
-        return this.childNodeParser.createType(indexSignature.type, context) ?? this.additionalProperties;
+        return this.childNodeParser.createType(indexSignature.type, context) ?? this.additionalProperties
     }
 
-    protected getTypeId(node: ts.Node, context: Context): string {
-        const nodeType = ts.isInterfaceDeclaration(node) ? "interface" : "class";
-        return `${nodeType}-${getKey(node, context)}`;
+    protected getTypeId (node:ts.Node, context:Context):string {
+        const nodeType = ts.isInterfaceDeclaration(node) ? 'interface' : 'class'
+        return `${nodeType}-${getKey(node, context)}`
     }
 
-    protected getPropertyName(propertyName: PropertyName): string {
+    protected getPropertyName (propertyName:PropertyName):string {
         if (propertyName.kind === ts.SyntaxKind.ComputedPropertyName) {
-            const symbol = this.typeChecker.getSymbolAtLocation(propertyName);
+            const symbol = this.typeChecker.getSymbolAtLocation(propertyName)
             if (symbol) {
-                return symbol.getName();
+                return symbol.getName()
             }
         }
-        return propertyName.getText();
+        return propertyName.getText()
     }
 }

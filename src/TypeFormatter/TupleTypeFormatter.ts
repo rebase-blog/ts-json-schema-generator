@@ -1,61 +1,61 @@
-import type { Definition } from "../Schema/Definition.js";
-import type { SubTypeFormatter } from "../SubTypeFormatter.js";
-import { ArrayType } from "../Type/ArrayType.js";
-import type { BaseType } from "../Type/BaseType.js";
-import { OptionalType } from "../Type/OptionalType.js";
-import { RestType } from "../Type/RestType.js";
-import { TupleType } from "../Type/TupleType.js";
-import type { TypeFormatter } from "../TypeFormatter.js";
-import { derefType } from "../Utils/derefType.js";
-import { notNever } from "../Utils/notNever.js";
-import { uniqueArray } from "../Utils/uniqueArray.js";
+import type { Definition } from '../Schema/Definition.js'
+import type { SubTypeFormatter } from '../SubTypeFormatter.js'
+import { ArrayType } from '../Type/ArrayType.js'
+import type { BaseType } from '../Type/BaseType.js'
+import { OptionalType } from '../Type/OptionalType.js'
+import { RestType } from '../Type/RestType.js'
+import { TupleType } from '../Type/TupleType.js'
+import type { TypeFormatter } from '../TypeFormatter.js'
+import { derefType } from '../Utils/derefType.js'
+import { notNever } from '../Utils/notNever.js'
+import { uniqueArray } from '../Utils/uniqueArray.js'
 
-function getRestAdditionalItems(
-    restType: RestType,
-    childTypeFormatter: TypeFormatter,
-): Definition["items"] | undefined {
-    const items = childTypeFormatter.getDefinition(restType).items;
+function getRestAdditionalItems (
+    restType:RestType,
+    childTypeFormatter:TypeFormatter,
+):Definition['items']|undefined {
+    const items = childTypeFormatter.getDefinition(restType).items
     if (items !== undefined) {
-        return items;
+        return items
     }
-    const resolvedType = derefType(restType.getType());
+    const resolvedType = derefType(restType.getType())
     if (!(resolvedType instanceof ArrayType)) {
-        return undefined;
+        return undefined
     }
-    const resolvedDef = childTypeFormatter.getDefinition(resolvedType);
-    return resolvedDef.items;
+    const resolvedDef = childTypeFormatter.getDefinition(resolvedType)
+    return resolvedDef.items
 }
 
-function uniformRestType(type: RestType, check_type: BaseType): boolean {
-    const inner = type.getType();
+function uniformRestType (type:RestType, checkType:BaseType):boolean {
+    const inner = type.getType()
     return (
-        (inner instanceof ArrayType && inner.getItem().getId() === check_type.getId()) ||
+        (inner instanceof ArrayType && inner.getItem().getId() === checkType.getId()) ||
         (inner instanceof TupleType &&
-            inner.getTypes().every((tuple_type) => {
-                if (tuple_type instanceof RestType) {
-                    return uniformRestType(tuple_type, check_type);
+            inner.getTypes().every((tupleType) => {
+                if (tupleType instanceof RestType) {
+                    return uniformRestType(tupleType, checkType)
                 } else {
-                    return tuple_type?.getId() === check_type.getId();
+                    return tupleType?.getId() === checkType.getId()
                 }
             }))
-    );
+    )
 }
 
 export class TupleTypeFormatter implements SubTypeFormatter {
-    public constructor(protected childTypeFormatter: TypeFormatter) {}
+    public constructor (protected childTypeFormatter:TypeFormatter) {}
 
-    public supportsType(type: BaseType): boolean {
-        return type instanceof TupleType;
+    public supportsType (type:BaseType):boolean {
+        return type instanceof TupleType
     }
 
-    public getDefinition(type: TupleType): Definition {
-        const subTypes = type.getTypes().filter(notNever);
+    public getDefinition (type:TupleType):Definition {
+        const subTypes = type.getTypes().filter(notNever)
 
-        const requiredElements = subTypes.filter((t) => !(t instanceof OptionalType) && !(t instanceof RestType));
-        const optionalElements = subTypes.filter((t): t is OptionalType => t instanceof OptionalType);
+        const requiredElements = subTypes.filter((t) => !(t instanceof OptionalType) && !(t instanceof RestType))
+        const optionalElements = subTypes.filter((t):t is OptionalType => t instanceof OptionalType)
         // NOTE: A maximum of one rest type is assumed.
-        const restType = subTypes.find((t): t is RestType => t instanceof RestType);
-        const firstItemType = requiredElements.length > 0 ? requiredElements[0] : optionalElements[0]?.getType();
+        const restType = subTypes.find((t):t is RestType => t instanceof RestType)
+        const firstItemType = requiredElements.length > 0 ? requiredElements[0] : optionalElements[0]?.getType()
 
         // Check whether the tuple is of any of the following forms:
         //   [A, A, A]
@@ -66,43 +66,43 @@ export class TupleTypeFormatter implements SubTypeFormatter {
             firstItemType &&
             requiredElements.every((item) => item.getId() === firstItemType.getId()) &&
             optionalElements.every((item) => item.getType().getId() === firstItemType.getId()) &&
-            (!restType || uniformRestType(restType, firstItemType));
+            (!restType || uniformRestType(restType, firstItemType))
 
         // If so, generate a simple array with minItems (and possibly maxItems) instead.
         if (isUniformArray) {
             return {
-                type: "array",
-                items: this.childTypeFormatter.getDefinition(firstItemType),
-                minItems: requiredElements.length,
-                ...(restType ? {} : { maxItems: requiredElements.length + optionalElements.length }),
-            };
+                type:'array',
+                items:this.childTypeFormatter.getDefinition(firstItemType),
+                minItems:requiredElements.length,
+                ...(restType ? {} : { maxItems:requiredElements.length + optionalElements.length }),
+            }
         }
 
-        const requiredDefinitions = requiredElements.map((item) => this.childTypeFormatter.getDefinition(item));
-        const optionalDefinitions = optionalElements.map((item) => this.childTypeFormatter.getDefinition(item));
-        const itemsTotal = requiredDefinitions.length + optionalDefinitions.length;
+        const requiredDefinitions = requiredElements.map((item) => this.childTypeFormatter.getDefinition(item))
+        const optionalDefinitions = optionalElements.map((item) => this.childTypeFormatter.getDefinition(item))
+        const itemsTotal = requiredDefinitions.length + optionalDefinitions.length
         const additionalItems =
-            restType !== undefined ? getRestAdditionalItems(restType, this.childTypeFormatter) : undefined;
+            restType !== undefined ? getRestAdditionalItems(restType, this.childTypeFormatter) : undefined
 
         return {
-            type: "array",
-            minItems: requiredDefinitions.length,
-            ...(itemsTotal ? { items: requiredDefinitions.concat(optionalDefinitions) } : {}), // with items
-            ...(!itemsTotal && additionalItems ? { items: additionalItems } : {}), // with only rest param
-            ...(!itemsTotal && !additionalItems ? { maxItems: 0 } : {}), // empty
+            type:'array',
+            minItems:requiredDefinitions.length,
+            ...(itemsTotal ? { items:requiredDefinitions.concat(optionalDefinitions) } : {}), // with items
+            ...(!itemsTotal && additionalItems ? { items:additionalItems } : {}), // with only rest param
+            ...(!itemsTotal && !additionalItems ? { maxItems:0 } : {}), // empty
             ...(additionalItems && !Array.isArray(additionalItems) && itemsTotal
-                ? { additionalItems: additionalItems }
+                ? { additionalItems }
                 : {}), // with rest items
-            ...(!additionalItems && itemsTotal ? { maxItems: itemsTotal } : {}), // without rest
-        };
+            ...(!additionalItems && itemsTotal ? { maxItems:itemsTotal } : {}), // without rest
+        }
     }
 
-    public getChildren(type: TupleType): BaseType[] {
+    public getChildren (type:TupleType):BaseType[] {
         return uniqueArray(
             type
                 .getTypes()
                 .filter(notNever)
-                .reduce((result: BaseType[], item) => [...result, ...this.childTypeFormatter.getChildren(item)], []),
-        );
+                .reduce((result:BaseType[], item) => [...result, ...this.childTypeFormatter.getChildren(item)], []),
+        )
     }
 }

@@ -1,7 +1,7 @@
-import { it } from "node:test";
-import { assertInvalidSchema } from "../../utils.js";
+import { it } from 'node:test'
+import { assertInvalidSchema } from '../../utils.js'
 
 it(
-    "invalid-data - missing-discriminator",
-    assertInvalidSchema("missing-discriminator", "MyType", 'Cannot find discriminator keyword "type" in type B.'),
-);
+    'invalid-data - missing-discriminator',
+    assertInvalidSchema('missing-discriminator', 'MyType', 'Cannot find discriminator keyword "type" in type B.'),
+)

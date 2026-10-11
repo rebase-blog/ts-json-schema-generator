@@ -1,12 +1,12 @@
-import { it } from "node:test";
-import { assertConfigSchema } from "../../utils.js";
+import { it } from 'node:test'
+import { assertConfigSchema } from '../../utils.js'
 
 it(
-    "config - jsdoc-inheritance-exclude",
-    assertConfigSchema("jsdoc-inheritance-exclude", {
-        type: "MyType",
-        expose: "export",
-        topRef: true,
-        jsDoc: "extended",
+    'config - jsdoc-inheritance-exclude',
+    assertConfigSchema('jsdoc-inheritance-exclude', {
+        type:'MyType',
+        expose:'export',
+        topRef:true,
+        jsDoc:'extended',
     }),
-);
+)

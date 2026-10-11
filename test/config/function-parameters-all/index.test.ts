@@ -1,9 +1,9 @@
-import { it } from "node:test";
-import { assertConfigSchema } from "../../utils.js";
+import { it } from 'node:test'
+import { assertConfigSchema } from '../../utils.js'
 
 it(
-    "config - function-parameters-all",
-    assertConfigSchema("function-parameters-all", {
-        type: "*",
+    'config - function-parameters-all',
+    assertConfigSchema('function-parameters-all', {
+        type:'*',
     }),
-);
+)

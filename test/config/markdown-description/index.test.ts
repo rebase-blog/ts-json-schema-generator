@@ -1,14 +1,14 @@
-import { it } from "node:test";
-import { assertConfigSchema } from "../../utils.js";
+import { it } from 'node:test'
+import { assertConfigSchema } from '../../utils.js'
 
 it(
-    "config - markdown-description",
-    assertConfigSchema("markdown-description", {
-        type: "MyObject",
-        expose: "export",
-        topRef: false,
-        jsDoc: "extended",
-        sortProps: true,
-        markdownDescription: true,
+    'config - markdown-description',
+    assertConfigSchema('markdown-description', {
+        type:'MyObject',
+        expose:'export',
+        topRef:false,
+        jsDoc:'extended',
+        sortProps:true,
+        markdownDescription:true,
     }),
-);
+)

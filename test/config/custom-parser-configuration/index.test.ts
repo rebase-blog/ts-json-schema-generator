@@ -1,27 +1,28 @@
-import { it } from "node:test";
-import ts from "typescript";
-import type { BaseType, Context, ReferenceType, SubNodeParser } from "../../../index.js";
-import { StringType } from "../../../src/Type/StringType.js";
-import { assertConfigSchema } from "../../utils.js";
+import { it } from 'node:test'
+import ts from 'typescript'
+import type { BaseType, Context, ReferenceType, SubNodeParser } from '../../../index.js'
+import { StringType } from '../../../src/Type/StringType.js'
+import { assertConfigSchema } from '../../utils.js'
 
 class ExampleConstructorParser implements SubNodeParser {
-    supportsNode(node: ts.Node): boolean {
-        return node.kind === ts.SyntaxKind.ConstructorType;
+    supportsNode (node:ts.Node):boolean {
+        return node.kind === ts.SyntaxKind.ConstructorType
     }
-    createType(node: ts.Node, context: Context, reference?: ReferenceType): BaseType {
-        return new StringType();
+
+    createType (node:ts.Node, context:Context, reference?:ReferenceType):BaseType {
+        return new StringType()
     }
 }
 
 it(
-    "config - custom-parser-configuration",
+    'config - custom-parser-configuration',
     assertConfigSchema(
-        "custom-parser-configuration",
+        'custom-parser-configuration',
         {
-            type: "MyObject",
+            type:'MyObject',
         },
         false,
         undefined,
         (parser) => parser.addNodeParser(new ExampleConstructorParser()),
     ),
-);
+)

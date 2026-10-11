@@ -1,16 +1,16 @@
-import { it } from "node:test";
-import { assertConfigSchema } from "../../utils.js";
+import { it } from 'node:test'
+import { assertConfigSchema } from '../../utils.js'
 
 it(
-    "config - tsconfig-support",
+    'config - tsconfig-support',
     assertConfigSchema(
-        "tsconfig-support",
+        'tsconfig-support',
         {
-            type: "MyObject",
-            expose: "all",
-            topRef: false,
-            jsDoc: "none",
+            type:'MyObject',
+            expose:'all',
+            topRef:false,
+            jsDoc:'none',
         },
         true,
     ),
-);
+)

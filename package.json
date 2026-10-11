@@ -2,42 +2,9 @@
   "name": "@rebase-blog/ts-json-schema-generator",
   "version": "2.0.0",
   "description": "Generate JSON schema from your Typescript sources",
-  "keywords": [
-    "ts",
-    "typescript",
-    "json",
-    "schema",
-    "jsonschema"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/rebase-blog/ts-json-schema-generator.git"
-  },
-  "license": "MIT",
-  "author": {
-    "name": "Alexander Evtushenko",
-    "email": "aevtushenko@xiag.ch"
-  },
-  "contributors": [
-    {
-      "name": "Dominik Moritz",
-      "email": "domoritz@gmail.com"
-    },
-    {
-      "name": "MooYeol Prescott Lee",
-      "email": "mooyoul@gmail.com"
-    }
-  ],
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "exports": {
-    ".": "./dist/index.js",
-    "./*": [
-      "./dist/*.js",
-      "./dist/*"
-    ]
-  },
   "bin": {
     "ts-json-schema-generator": "bin/ts-json-schema-generator.js"
   },
@@ -45,6 +12,13 @@
     "./dist/*",
     "./bin/*"
   ],
+  "exports": {
+    ".": "./dist/index.js",
+    "./*": [
+      "./dist/*.js",
+      "./dist/*"
+    ]
+  },
   "scripts": {
     "build-esm": "tsc",
     "build": "mkdir -p ./dist && rm -rf ./dist/* && npm run build-esm",
@@ -75,8 +49,6 @@
     "typescript": ">=5.9 <7"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@types/eslint": "^9.6.1",
     "@types/node": "^26.0.1",
     "@types/normalize-path": "^3.0.2",
     "@typescript/vfs": "1.6.4",
@@ -86,11 +58,8 @@
     "c8": "^11.0.0",
     "cross-env": "^10.1.0",
     "eslint": "10.11.0",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.5",
-    "globals": "^17.4.0",
     "markdown-toc": "^1.2.0",
-    "prettier": "^3.8.1",
+    "newneostandard": "^0.14.3",
     "try": "^1.0.3",
     "tsx": "^4.21.0",
     "typescript-eslint": "^8.57.2",
@@ -114,5 +83,31 @@
     "@typescript-eslint/parser": {
       "typescript": "^6.0.2"
     }
-  }
+  },
+  "keywords": [
+    "ts",
+    "typescript",
+    "json",
+    "schema",
+    "jsonschema"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rebase-blog/ts-json-schema-generator.git"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Alexander Evtushenko",
+    "email": "aevtushenko@xiag.ch"
+  },
+  "contributors": [
+    {
+      "name": "Dominik Moritz",
+      "email": "domoritz@gmail.com"
+    },
+    {
+      "name": "MooYeol Prescott Lee",
+      "email": "mooyoul@gmail.com"
+    }
+  ]
 }

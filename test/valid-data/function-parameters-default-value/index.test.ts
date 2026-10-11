@@ -1,7 +1,7 @@
-import { assertValidSchema } from "../../utils.js";
-import { test } from "node:test";
+import { assertValidSchema } from '../../utils.js'
+import { test } from 'node:test'
 
 test(
-    "valid-data - function-parameters-default-value",
-    assertValidSchema("function-parameters-default-value", "myFunction"),
-);
+    'valid-data - function-parameters-default-value',
+    assertValidSchema('function-parameters-default-value', 'myFunction'),
+)

@@ -1,12 +1,12 @@
-import { it } from "node:test";
-import { assertConfigSchema } from "../../utils.js";
+import { it } from 'node:test'
+import { assertConfigSchema } from '../../utils.js'
 
 it(
-    "config - jsdoc-hidden-types",
-    assertConfigSchema("jsdoc-hidden-types", {
-        type: "MyType",
-        expose: "export",
-        topRef: true,
-        jsDoc: "extended",
+    'config - jsdoc-hidden-types',
+    assertConfigSchema('jsdoc-hidden-types', {
+        type:'MyType',
+        expose:'export',
+        topRef:true,
+        jsDoc:'extended',
     }),
-);
+)

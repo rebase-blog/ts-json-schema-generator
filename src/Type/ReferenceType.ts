@@ -1,52 +1,52 @@
-import { JsonTypeError } from "../Error/Errors.js";
-import { BaseType } from "./BaseType.js";
+import { JsonTypeError } from '../Error/Errors.js'
+import { BaseType } from './BaseType.js'
 
 export class ReferenceType extends BaseType {
-    private type: BaseType | null = null;
+    private type:BaseType|null = null
 
-    private id: string | null = null;
+    private id:string|null = null
 
-    private name: string | null = null;
+    private name:string|null = null
 
-    public getId(): string {
+    public getId ():string {
         if (this.id == null) {
-            throw new JsonTypeError("Reference type ID not set yet", this);
+            throw new JsonTypeError('Reference type ID not set yet', this)
         }
 
-        return this.id;
+        return this.id
     }
 
-    public setId(id: string): void {
-        this.id = id;
+    public setId (id:string):void {
+        this.id = id
     }
 
-    public getName(): string {
+    public getName ():string {
         if (this.name == null) {
-            throw new JsonTypeError("Reference type name not set yet", this);
+            throw new JsonTypeError('Reference type name not set yet', this)
         }
 
-        return this.name;
+        return this.name
     }
 
-    public setName(name: string): void {
-        this.name = name;
+    public setName (name:string):void {
+        this.name = name
     }
 
-    public getType(): BaseType {
+    public getType ():BaseType {
         if (this.type == null) {
-            throw new JsonTypeError("Reference type not set yet", this);
+            throw new JsonTypeError('Reference type not set yet', this)
         }
 
-        return this.type;
+        return this.type
     }
 
-    public hasType(): boolean {
-        return this.type != null;
+    public hasType ():boolean {
+        return this.type != null
     }
 
-    public setType(type: BaseType): void {
-        this.type = type;
-        this.setId(type.getId());
-        this.setName(type.getName());
+    public setType (type:BaseType):void {
+        this.type = type
+        this.setId(type.getId())
+        this.setName(type.getName())
     }
 }

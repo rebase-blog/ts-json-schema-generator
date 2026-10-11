@@ -1,4 +1,4 @@
-import { assertValidSchema } from "../../utils.js";
-import { test } from "node:test";
+import { assertValidSchema } from '../../utils.js'
+import { test } from 'node:test'
 
-test("valid-data - type-mapped-simple", assertValidSchema("type-mapped-simple", "MyObject"));
+test('valid-data - type-mapped-simple', assertValidSchema('type-mapped-simple', 'MyObject'))

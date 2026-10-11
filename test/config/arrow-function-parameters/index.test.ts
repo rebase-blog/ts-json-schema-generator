@@ -1,10 +1,10 @@
-import { it } from "node:test";
-import { assertConfigSchema } from "../../utils.js";
+import { it } from 'node:test'
+import { assertConfigSchema } from '../../utils.js'
 
 it(
-    "config - arrow-function-parameters",
-    assertConfigSchema("arrow-function-parameters", {
-        type: "myFunction",
-        expose: "all",
+    'config - arrow-function-parameters',
+    assertConfigSchema('arrow-function-parameters', {
+        type:'myFunction',
+        expose:'all',
     }),
-);
+)

@@ -1,36 +1,36 @@
-import type ts from "typescript";
+import type ts from 'typescript'
 
 export interface Config {
     /**
      * Glob pattern(s) for source TypeScript files to process.
      * If not provided, falls back to files from tsconfig.
      */
-    path?: string;
+    path?:string;
 
     /**
      * Name of the type(s)/interface(s) to generate schema for.
      * Use "*" to generate schemas for all exported types.
      */
-    type?: string | string[];
+    type?:string|string[];
 
     /**
      * Minify the output JSON schema (no whitespace).
      * When false, the schema is pretty-printed with 2-space indentation.
      * @default false
      */
-    minify?: boolean;
+    minify?:boolean;
 
     /**
      * Sets the `$id` property in the root of the generated schema.
      * Used for schema identification and referencing.
      */
-    schemaId?: string;
+    schemaId?:string;
 
     /**
      * Path to a custom tsconfig.json file for TypeScript compilation.
      * If not provided, uses default TypeScript configuration.
      */
-    tsconfig?: string;
+    tsconfig?:string;
 
     /**
      * Controls which types are exposed as definitions in the schema.
@@ -39,14 +39,14 @@ export interface Config {
      * - "export": Only exposes exported types (respects @internal JSDoc tag)
      * @default "export"
      */
-    expose?: "all" | "none" | "export";
+    expose?:'all'|'none'|'export';
 
     /**
      * Wraps the root type in a `$ref` definition.
      * When false, inlines the root type definition directly.
      * @default true
      */
-    topRef?: boolean;
+    topRef?:boolean;
 
     /**
      * Controls how JSDoc comments are parsed and included in the schema.
@@ -55,7 +55,7 @@ export interface Config {
      * - "extended": Parses all tags plus descriptions, examples, and type overrides
      * @default "extended"
      */
-    jsDoc?: "none" | "extended" | "basic";
+    jsDoc?:'none'|'extended'|'basic';
 
     /**
      * Adds a `markdownDescription` field alongside `description` in the schema.
@@ -63,40 +63,40 @@ export interface Config {
      * Only works with `jsDoc: "extended"`.
      * @default false
      */
-    markdownDescription?: boolean;
+    markdownDescription?:boolean;
 
     /**
      * Includes the complete raw JSDoc comment as `fullDescription` in the schema.
      * Only works with `jsDoc: "extended"`.
      * @default false
      */
-    fullDescription?: boolean;
+    fullDescription?:boolean;
 
     /**
      * Sorts object properties alphabetically in the output.
      * @default true
      */
-    sortProps?: boolean;
+    sortProps?:boolean;
 
     /**
      * Controls whether tuples allow additional items beyond their defined length.
      * @default false
      */
-    strictTuples?: boolean;
+    strictTuples?:boolean;
 
     /**
      * Skips TypeScript type checking to improve performance.
      * Speeds up generation but may miss type errors.
      * @default false
      */
-    skipTypeCheck?: boolean;
+    skipTypeCheck?:boolean;
 
     /**
      * URI-encodes `$ref` values (e.g., `#/definitions/Foo%3CBar%3E`).
      * When false, uses raw names in reference paths.
      * @default true
      */
-    encodeRefs?: boolean;
+    encodeRefs?:boolean;
 
     /**
      * Array of additional JSDoc tag names to include in the schema.
@@ -104,7 +104,7 @@ export interface Config {
      * Values are parsed as JSON5.
      * @default []
      */
-    extraTags?: string[];
+    extraTags?:string[];
 
     /**
      * Sets default value for `additionalProperties` on objects without index signatures.
@@ -112,7 +112,7 @@ export interface Config {
      * When true, allows additional properties on all objects.
      * @default false
      */
-    additionalProperties?: boolean;
+    additionalProperties?:boolean;
 
     /**
      * Controls discriminator style for discriminated unions.
@@ -120,7 +120,7 @@ export interface Config {
      * - "open-api": Uses OpenAPI 3.x style with `discriminator: { propertyName }` and `oneOf`
      * @default "json-schema"
      */
-    discriminatorType?: "json-schema" | "open-api";
+    discriminatorType?:'json-schema'|'open-api';
 
     /**
      * Controls how function types are handled in the schema.
@@ -129,33 +129,33 @@ export interface Config {
      * - "hide": Treats functions as NeverType (excluded from schema)
      * @default "comment"
      */
-    functions?: FunctionOptions;
+    functions?:FunctionOptions;
 
     /**
      * Pre-compiled TypeScript Program instance to use.
      * Bypasses the default setup of a TypeScript program, and so some configuration options may not be applied.
      * Useful for programmatic usage with existing TypeScript compilation, or for vfs scenarios where you do not want file-system representation.
      */
-    tsProgram?: ts.Program;
+    tsProgram?:ts.Program;
 }
 
-export const DEFAULT_CONFIG: Omit<Required<Config>, "path" | "type" | "schemaId" | "tsconfig" | "tsProgram"> = {
-    expose: "export",
-    topRef: true,
-    jsDoc: "extended",
-    markdownDescription: false,
-    fullDescription: false,
-    sortProps: true,
-    strictTuples: false,
-    skipTypeCheck: false,
-    encodeRefs: true,
-    minify: false,
-    extraTags: [],
-    additionalProperties: false,
-    discriminatorType: "json-schema",
-    functions: "comment",
-};
+export const DEFAULT_CONFIG:Omit<Required<Config>, 'path'|'type'|'schemaId'|'tsconfig'|'tsProgram'> = {
+    expose:'export',
+    topRef:true,
+    jsDoc:'extended',
+    markdownDescription:false,
+    fullDescription:false,
+    sortProps:true,
+    strictTuples:false,
+    skipTypeCheck:false,
+    encodeRefs:true,
+    minify:false,
+    extraTags:[],
+    additionalProperties:false,
+    discriminatorType:'json-schema',
+    functions:'comment',
+}
 
-export type CompletedConfig = Config & typeof DEFAULT_CONFIG;
+export type CompletedConfig = Config&typeof DEFAULT_CONFIG
 
-export type FunctionOptions = "fail" | "comment" | "hide";
+export type FunctionOptions = 'fail'|'comment'|'hide'
