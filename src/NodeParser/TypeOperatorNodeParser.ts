@@ -1,41 +1,41 @@
-import ts from "typescript";
-import type { Context, NodeParser } from "../NodeParser.js";
-import type { SubNodeParser } from "../SubNodeParser.js";
-import { ArrayType } from "../Type/ArrayType.js";
-import { BaseType } from "../Type/BaseType.js";
-import { NumberType } from "../Type/NumberType.js";
-import { ObjectType } from "../Type/ObjectType.js";
-import { StringType } from "../Type/StringType.js";
-import { UnionType } from "../Type/UnionType.js";
-import { derefType } from "../Utils/derefType.js";
-import { getTypeKeys } from "../Utils/typeKeys.js";
+import ts from 'typescript'
+import type { Context, NodeParser } from '../NodeParser.js'
+import type { SubNodeParser } from '../SubNodeParser.js'
+import { ArrayType } from '../Type/ArrayType.js'
+import { BaseType } from '../Type/BaseType.js'
+import { NumberType } from '../Type/NumberType.js'
+import { ObjectType } from '../Type/ObjectType.js'
+import { StringType } from '../Type/StringType.js'
+import { UnionType } from '../Type/UnionType.js'
+import { derefType } from '../Utils/derefType.js'
+import { getTypeKeys } from '../Utils/typeKeys.js'
 
 export class TypeOperatorNodeParser implements SubNodeParser {
-    public constructor(protected childNodeParser: NodeParser) {}
+    public constructor (protected childNodeParser:NodeParser) {}
 
-    public supportsNode(node: ts.TypeOperatorNode): boolean {
-        return node.kind === ts.SyntaxKind.TypeOperator;
+    public supportsNode (node:ts.TypeOperatorNode):boolean {
+        return node.kind === ts.SyntaxKind.TypeOperator
     }
 
-    public createType(node: ts.TypeOperatorNode, context: Context): BaseType {
-        const type = this.childNodeParser.createType(node.type, context);
-        const derefed = derefType(type);
+    public createType (node:ts.TypeOperatorNode, context:Context):BaseType {
+        const type = this.childNodeParser.createType(node.type, context)
+        const derefed = derefType(type)
         // Remove readonly modifier from type
         if (node.operator === ts.SyntaxKind.ReadonlyKeyword && derefed) {
-            return derefed;
+            return derefed
         }
         if (derefed instanceof ArrayType) {
-            return new NumberType();
+            return new NumberType()
         }
-        const keys = getTypeKeys(type);
+        const keys = getTypeKeys(type)
         if (derefed instanceof ObjectType && derefed.getAdditionalProperties() instanceof BaseType) {
-            return new UnionType([...keys, new StringType()]);
+            return new UnionType([...keys, new StringType()])
         }
 
         if (keys.length === 1) {
-            return keys[0];
+            return keys[0]
         }
 
-        return new UnionType(keys);
+        return new UnionType(keys)
     }
 }

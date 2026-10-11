@@ -1,121 +1,122 @@
-import json5 from "json5";
-import type ts from "typescript";
-import type { AnnotationsReader } from "../AnnotationsReader.js";
-import type { Annotations } from "../Type/AnnotatedType.js";
-import { symbolAtNode } from "../Utils/symbolAtNode.js";
+import json5 from 'json5'
+import type ts from 'typescript'
+import type { AnnotationsReader } from '../AnnotationsReader.js'
+import type { Annotations } from '../Type/AnnotatedType.js'
+import { symbolAtNode } from '../Utils/symbolAtNode.js'
 
 export class BasicAnnotationsReader implements AnnotationsReader {
-    private static requiresDollar = new Set<string>(["id", "comment", "ref"]);
+    private static requiresDollar = new Set<string>(['id', 'comment', 'ref'])
     private static textTags = new Set<string>([
-        "title",
-        "description",
-        "id",
+        'title',
+        'description',
+        'id',
 
-        "format",
-        "pattern",
-        "ref",
+        'format',
+        'pattern',
+        'ref',
 
         // New since draft-07:
-        "comment",
-        "contentMediaType",
-        "contentEncoding",
+        'comment',
+        'contentMediaType',
+        'contentEncoding',
 
         // Custom tag for if-then-else support.
-        "discriminator",
-    ]);
+        'discriminator',
+    ])
+
     private static jsonTags = new Set<string>([
-        "minimum",
-        "exclusiveMinimum",
+        'minimum',
+        'exclusiveMinimum',
 
-        "maximum",
-        "exclusiveMaximum",
+        'maximum',
+        'exclusiveMaximum',
 
-        "multipleOf",
+        'multipleOf',
 
-        "minLength",
-        "maxLength",
+        'minLength',
+        'maxLength',
 
-        "minProperties",
-        "maxProperties",
+        'minProperties',
+        'maxProperties',
 
-        "minItems",
-        "maxItems",
-        "uniqueItems",
+        'minItems',
+        'maxItems',
+        'uniqueItems',
 
-        "propertyNames",
-        "contains",
-        "const",
-        "examples",
+        'propertyNames',
+        'contains',
+        'const',
+        'examples',
 
-        "default",
+        'default',
 
-        "required",
+        'required',
 
         // New since draft-07:
-        "if",
-        "then",
-        "else",
-        "readOnly",
-        "writeOnly",
+        'if',
+        'then',
+        'else',
+        'readOnly',
+        'writeOnly',
 
         // New since draft 2019-09:
-        "deprecated",
-    ]);
+        'deprecated',
+    ])
 
-    public constructor(private extraTags?: Set<string>) {}
+    public constructor (private extraTags?:Set<string>) {}
 
-    public getAnnotations(node: ts.Node): Annotations | undefined {
-        const symbol = symbolAtNode(node);
+    public getAnnotations (node:ts.Node):Annotations|undefined {
+        const symbol = symbolAtNode(node)
         if (!symbol) {
-            return undefined;
+            return undefined
         }
 
-        const jsDocTags: ts.JSDocTagInfo[] = symbol.getJsDocTags();
+        const jsDocTags:ts.JSDocTagInfo[] = symbol.getJsDocTags()
         if (!jsDocTags || !jsDocTags.length) {
-            return undefined;
+            return undefined
         }
 
-        const annotations = jsDocTags.reduce((result: Annotations, jsDocTag) => {
-            const value = this.parseJsDocTag(jsDocTag);
+        const annotations = jsDocTags.reduce((result:Annotations, jsDocTag) => {
+            const value = this.parseJsDocTag(jsDocTag)
             if (value !== undefined) {
                 if (BasicAnnotationsReader.requiresDollar.has(jsDocTag.name)) {
-                    result["$" + jsDocTag.name] = value;
+                    result['$' + jsDocTag.name] = value
                 } else {
-                    result[jsDocTag.name] = value;
+                    result[jsDocTag.name] = value
                 }
             }
-            return result;
-        }, {});
+            return result
+        }, {})
 
-        return Object.keys(annotations).length ? annotations : undefined;
+        return Object.keys(annotations).length ? annotations : undefined
     }
 
-    private parseJsDocTag(jsDocTag: ts.JSDocTagInfo): any {
-        const isTextTag = BasicAnnotationsReader.textTags.has(jsDocTag.name);
+    private parseJsDocTag (jsDocTag:ts.JSDocTagInfo):any {
+        const isTextTag = BasicAnnotationsReader.textTags.has(jsDocTag.name)
         // Non-text tags without explicit value (e.g. `@deprecated`) default to `true`.
-        const defaultText = isTextTag ? "" : "true";
-        const text = jsDocTag.text?.map((part) => part.text).join("") || defaultText;
+        const defaultText = isTextTag ? '' : 'true'
+        const text = jsDocTag.text?.map((part) => part.text).join('') || defaultText
 
         if (isTextTag) {
-            return text;
+            return text
         }
-        let parsed = this.parseJson(text);
-        parsed = parsed === undefined ? text : parsed;
+        let parsed = this.parseJson(text)
+        parsed = parsed === undefined ? text : parsed
         if (BasicAnnotationsReader.jsonTags.has(jsDocTag.name)) {
-            return parsed;
+            return parsed
         } else if (this.extraTags?.has(jsDocTag.name)) {
-            return parsed;
+            return parsed
         } else {
             // Unknown jsDoc tag.
-            return undefined;
+            return undefined
         }
     }
 
-    private parseJson(value: string): any {
+    private parseJson (value:string):any {
         try {
-            return json5.parse(value);
+            return json5.parse(value)
         } catch {
-            return undefined;
+            return undefined
         }
     }
 }

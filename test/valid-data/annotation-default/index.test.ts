@@ -1,27 +1,27 @@
-import { assertValidSchema } from "../../utils";
-import { test } from "node:test";
+import { assertValidSchema } from '../../utils.js'
+import { test } from 'node:test'
 
 test(
-    "valid-data - annotation-default",
-    assertValidSchema("annotation-default", "MyObject", undefined, {
-        validSamples: [
+    'valid-data - annotation-default',
+    assertValidSchema('annotation-default', 'MyObject', undefined, {
+        validSamples:[
             {
-                nullField: null,
-                numberField: 100,
-                stringField: "goodbye",
-                arrayField: [],
-                booleanField: false,
-                nestedField: {},
+                nullField:null,
+                numberField:100,
+                stringField:'goodbye',
+                arrayField:[],
+                booleanField:false,
+                nestedField:{},
             },
         ],
-        invalidSamples: [{ nullField: null, numberField: 10, stringField: "hello" }, {}],
+        invalidSamples:[{ nullField:null, numberField:10, stringField:'hello' }, {}],
     }),
-);
+)
 
 test(
-    "valid-data - annotation-default",
-    assertValidSchema("annotation-default", "MyObject", undefined, {
-        validSamples: [{ nullField: null, numberField: 10, stringField: "hello" }, {}],
-        ajvOptions: { useDefaults: true },
+    'valid-data - annotation-default',
+    assertValidSchema('annotation-default', 'MyObject', undefined, {
+        validSamples:[{ nullField:null, numberField:10, stringField:'hello' }, {}],
+        ajvOptions:{ useDefaults:true },
     }),
-);
+)

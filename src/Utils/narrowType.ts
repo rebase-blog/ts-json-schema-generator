@@ -1,8 +1,8 @@
-import type { BaseType } from "../Type/BaseType.js";
-import { EnumType } from "../Type/EnumType.js";
-import { NeverType } from "../Type/NeverType.js";
-import { UnionType } from "../Type/UnionType.js";
-import { derefType } from "./derefType.js";
+import type { BaseType } from '../Type/BaseType.js'
+import { EnumType } from '../Type/EnumType.js'
+import { NeverType } from '../Type/NeverType.js'
+import { UnionType } from '../Type/UnionType.js'
+import { derefType } from './derefType.js'
 
 /**
  * Narrows the given type by passing all variants to the given predicate function. So when type is a union type then
@@ -16,25 +16,25 @@ import { derefType } from "./derefType.js";
  *                    kept, when returning false it is removed.
  * @return The narrowed down type.
  */
-export function narrowType(type: BaseType, predicate: (type: BaseType) => boolean): BaseType {
-    const derefed = derefType(type);
+export function narrowType (type:BaseType, predicate:(type:BaseType) => boolean):BaseType {
+    const derefed = derefType(type)
     if (derefed instanceof UnionType || derefed instanceof EnumType) {
-        let changed = false;
-        const types: BaseType[] = [];
+        let changed = false
+        const types:BaseType[] = []
         for (const sub of derefed.getTypes()) {
-            const derefedSub = derefType(sub);
+            const derefedSub = derefType(sub)
 
             // Recursively narrow down all types within the union
-            const narrowed = narrowType(derefedSub, predicate);
+            const narrowed = narrowType(derefedSub, predicate)
             if (!(narrowed instanceof NeverType)) {
                 if (narrowed === derefedSub) {
-                    types.push(sub);
+                    types.push(sub)
                 } else {
-                    types.push(narrowed);
-                    changed = true;
+                    types.push(narrowed)
+                    changed = true
                 }
             } else {
-                changed = true;
+                changed = true
             }
         }
 
@@ -42,14 +42,14 @@ export function narrowType(type: BaseType, predicate: (type: BaseType) => boolea
         // keep definitions
         if (changed) {
             if (types.length === 0) {
-                return new NeverType();
+                return new NeverType()
             } else if (types.length === 1) {
-                return types[0];
+                return types[0]
             } else {
-                return new UnionType(types);
+                return new UnionType(types)
             }
         }
-        return type;
+        return type
     }
-    return predicate(derefed) ? type : new NeverType();
+    return predicate(derefed) ? type : new NeverType()
 }

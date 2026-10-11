@@ -1,4 +1,4 @@
-import ts from "typescript";
+import ts from 'typescript'
 
 /**
  * Checks if given node has the given modifier.
@@ -7,12 +7,12 @@ import ts from "typescript";
  * @param modifier - The modifier to look for.
  * @return True if node has the modifier, false if not.
  */
-export function hasModifier(node: ts.HasModifiers, modifier: ts.SyntaxKind): boolean {
-    const nodeModifiers = node.modifiers;
+export function hasModifier (node:ts.HasModifiers, modifier:ts.SyntaxKind):boolean {
+    const nodeModifiers = node.modifiers
     if (nodeModifiers == null) {
-        return false;
+        return false
     } else {
-        return nodeModifiers.some((nodeModifier) => nodeModifier.kind === modifier);
+        return nodeModifiers.some((nodeModifier) => nodeModifier.kind === modifier)
     }
 }
 
@@ -22,8 +22,8 @@ export function hasModifier(node: ts.HasModifiers, modifier: ts.SyntaxKind): boo
  * @param node - The node to check.
  * @return True if node is public, false if not.
  */
-export function isPublic(node: ts.HasModifiers): boolean {
-    return !(hasModifier(node, ts.SyntaxKind.PrivateKeyword) || hasModifier(node, ts.SyntaxKind.ProtectedKeyword));
+export function isPublic (node:ts.HasModifiers):boolean {
+    return !(hasModifier(node, ts.SyntaxKind.PrivateKeyword) || hasModifier(node, ts.SyntaxKind.ProtectedKeyword))
 }
 
 /**
@@ -32,6 +32,6 @@ export function isPublic(node: ts.HasModifiers): boolean {
  * @param node - The node to check.
  * @return True if node is static, false if not.
  */
-export function isStatic(node: ts.HasModifiers): boolean {
-    return hasModifier(node, ts.SyntaxKind.StaticKeyword);
+export function isStatic (node:ts.HasModifiers):boolean {
+    return hasModifier(node, ts.SyntaxKind.StaticKeyword)
 }

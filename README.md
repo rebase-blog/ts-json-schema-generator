@@ -1,41 +1,57 @@
 # ts-json-schema-generator
 
-![Test](https://github.com/vega/ts-json-schema-generator/workflows/Test/badge.svg)
-[![codecov](https://codecov.io/gh/vega/ts-json-schema-generator/branch/master/graph/badge.svg)](https://codecov.io/gh/vega/ts-json-schema-generator)
-[![npm version](https://img.shields.io/npm/v/ts-json-schema-generator.svg)](https://www.npmjs.com/package/ts-json-schema-generator)
+![tests](https://github.com/rebase-blog/ts-json-schema-generator/actions/workflows/nodejs.yml/badge.svg)
+[![npm version](https://img.shields.io/npm/v/@rebase-blog/ts-json-schema-generator.svg)](https://www.npmjs.com/package/@rebase-blog/ts-json-schema-generator)
 
-Extended version of [https://github.com/xiag-ag/typescript-to-json-schema](https://github.com/xiag-ag/typescript-to-json-schema).
+This is a fork of [vega/ts-json-schema-generator](https://github.com/vega/ts-json-schema-generator).
 
-Inspired by [`YousefED/typescript-json-schema`](https://github.com/YousefED/typescript-json-schema). Here's the differences list:
+Extended version of
+[https://github.com/xiag-ag/typescript-to-json-schema](https://github.com/xiag-ag/typescript-to-json-schema).
 
-- this implementation avoids the use of `typeChecker.getTypeAtLocation()` (so probably it keeps correct type aliases)
-- processing AST and formatting JSON schema have been split into two independent steps
-- not exported types, interfaces, enums are not exposed in the `definitions` section in the JSON schema
+Inspired by
+[`YousefED/typescript-json-schema`](https://github.com/YousefED/typescript-json-schema).
+Here's the differences list:
+
+- this implementation avoids the use of `typeChecker.getTypeAtLocation()`
+  (so probably it keeps correct type aliases)
+- processing AST and formatting JSON schema have been split into two
+  independent steps
+- not exported types, interfaces, enums are not exposed in the
+  `definitions` section in the JSON schema
 
 ## Contributors
 
-This project is made possible by a [community of contributors](https://github.com/vega/ts-json-schema-generator/graphs/contributors). We welcome contributions of any kind (issues, code, documentation, examples, tests,...). Please read our [code of conduct](https://vega.github.io/vega/about/code-of-conduct).
+This project is made possible by a
+[community of contributors](https://github.com/vega/ts-json-schema-generator/graphs/contributors). We welcome contributions of any kind (issues, code, documentation, examples, tests,...). Please read our [code of conduct](https://vega.github.io/vega/about/code-of-conduct).
 
 ## CLI Usage
 
 Run the schema generator with npx:
 
 ```bash
-npx ts-json-schema-generator --path 'my/project/**/*.ts' --type 'My.Type.Name'
+npx @rebase-blog/ts-json-schema-generator --path 'my/project/**/*.ts' --type 'My.Type.Name'
 ```
 
 Or install the package and then run it
 
 ```bash
-npm install --save ts-json-schema-generator
-./node_modules/.bin/ts-json-schema-generator --path 'my/project/**/*.ts' --type 'My.Type.Name'
+npm install --save @rebase-blog/ts-json-schema-generator
+./node_modules/.bin/schema --path 'my/project/**/*.ts' --type 'My.Type.Name'
 ```
 
-Note that different platforms (e.g. Windows) may use different path separators so you may have to adjust the command above.
+Note that different platforms (e.g. Windows) may use different path separators
+so you may have to adjust the command above.
 
-Also note that you need to quote paths with `*` as otherwise the shell will expand the paths and therefore only pass the first path to the generator.
+Also note that you need to quote paths with `*` as otherwise the shell will
+expand the paths and therefore only pass the first path to the generator.
 
-By default, the command-line generator will use the `tsconfig.json` file in the current working directory, or the first parent directory that contains a `tsconfig.json` file up to the root of the filesystem. If you want to use a different `tsconfig.json` file, you can use the `--tsconfig` option. In particular, if you need to use different compilation options for types, you may want to create a separate `tsconfig.json` file for the schema generation only.
+By default, the command-line generator will use the `tsconfig.json` file in the
+current working directory, or the first parent directory that
+contains a `tsconfig.json` file up to the root of the filesystem.
+If you want to use a different `tsconfig.json` file, you can use the
+`--tsconfig` option. In particular, if you need to use different
+compilation options for types, you may want to create a separate
+`tsconfig.json` file for the schema generation only.
 
 ### Options
 
@@ -66,16 +82,16 @@ By default, the command-line generator will use the `tsconfig.json` file in the 
 ## Programmatic Usage
 
 ```js
-// main.js
+// main.mjs
 
-const tsj = require("ts-json-schema-generator");
-const fs = require("fs");
+import * as tsj from "@rebase-blog/ts-json-schema-generator";
+import fs from "node:fs";
 
-/** @type {import('ts-json-schema-generator/dist/src/Config').Config} */
+/** @type {import('@rebase-blog/ts-json-schema-generator').Config} */
 const config = {
     path: "path/to/source/file",
     tsconfig: "path/to/tsconfig.json",
-    type: "*", // Or <type-name> if you want to generate schema for that one type only
+    type: "*",  // Or <type-name> to generate schema for one type only
 };
 
 const outputPath = "path/to/output/file";
@@ -87,17 +103,24 @@ fs.writeFile(outputPath, schemaString, (err) => {
 });
 ```
 
-Run the schema generator via `node main.js`.
+Run the schema generator via `node main.mjs`.
 
 ### Custom formatting
 
-Extending the built-in formatting is possible by creating a custom formatter and adding it to the main formatter:
+Extending the built-in formatting is possible by creating a custom formatter
+and adding it to the main formatter:
 
-1. First we create a formatter, in this case for formatting function types (note that there is a built in one):
+1. First we create a formatter, in this case for formatting function types
+(note that there is a built in one):
 
 ```ts
 // my-function-formatter.ts
-import { BaseType, Definition, FunctionType, SubTypeFormatter } from "ts-json-schema-generator";
+import {
+    BaseType,
+    Definition,
+    FunctionType,
+    SubTypeFormatter
+} from "@rebase-blog/ts-json-schema-generator";
 import ts from "typescript";
 
 export class MyFunctionTypeFormatter implements SubTypeFormatter {
@@ -127,33 +150,46 @@ export class MyFunctionTypeFormatter implements SubTypeFormatter {
     }
 
     // However, if children ARE supported, you'll need something similar to
-    // this (see src/TypeFormatter/{Array,Definition,etc}.ts for some examples):
+    // this (see src/TypeFormatter/{Array,Definition,etc}.ts for some examples)
     public getChildren(type: FunctionType): BaseType[] {
         return this.childTypeFormatter.getChildren(type.getType());
     }
 }
 ```
 
-2. Then we add the formatter as a child to the core formatter using the augmentation callback:
+2. Then we add the formatter as a child to the core formatter using the
+   augmentation callback:
 
 ```ts
-import { createProgram, createParser, SchemaGenerator, createFormatter } from "ts-json-schema-generator";
+import {
+    createProgram,
+    createParser,
+    SchemaGenerator,
+    createFormatter
+} from "@rebase-blog/ts-json-schema-generator";
 import { MyFunctionTypeFormatter } from "./my-function-formatter.ts";
 import fs from "fs";
 
 const config = {
     path: "path/to/source/file",
     tsconfig: "path/to/tsconfig.json",
-    type: "*", // Or <type-name> if you want to generate schema for that one type only
+    type: "*", // Or <type-name> to generate schema for one type only
 };
 
 // We configure the formatter an add our custom formatter to it.
-const formatter = createFormatter(config, (fmt, circularReferenceTypeFormatter) => {
-    // If your formatter DOES NOT support children, e.g. getChildren() { return [] }:
-    fmt.addTypeFormatter(new MyFunctionTypeFormatter());
-    // If your formatter DOES support children, you'll need this reference too:
-    fmt.addTypeFormatter(new MyFunctionTypeFormatter(circularReferenceTypeFormatter));
-});
+const formatter = createFormatter(
+    config,
+    (fmt, circularReferenceTypeFormatter) => {
+        // If your formatter DOES NOT support children,
+        // e.g. getChildren() { return [] }:
+        fmt.addTypeFormatter(new MyFunctionTypeFormatter());
+        // If your formatter DOES support children,
+        // you'll need this reference too:
+        fmt.addTypeFormatter(
+            new MyFunctionTypeFormatter(circularReferenceTypeFormatter)
+        );
+    }
+);
 
 const program = createProgram(config);
 const parser = createParser(program, config);
@@ -169,37 +205,54 @@ fs.writeFile(outputPath, schemaString, (err) => {
 
 ### Custom parsing
 
-Similar to custom formatting, extending the built-in parsing works practically the same way:
+Similar to custom formatting, extending the built-in parsing works practically
+the same way:
 
 1. First we create a parser, in this case for parsing construct types:
 
 ```ts
 // my-constructor-parser.ts
-import { Context, StringType, ReferenceType, BaseType, SubNodeParser } from "ts-json-schema-generator";
+import {
+    Context,
+    StringType,
+    ReferenceType,
+    BaseType,
+    SubNodeParser
+} from "@rebase-blog/ts-json-schema-generator";
 // use typescript exported by TJS to avoid version conflict
-import ts from "ts-json-schema-generator";
+import ts from "@rebase-blog/ts-json-schema-generator";
 
 export class MyConstructorParser implements SubNodeParser {
-    supportsNode(node: ts.Node): boolean {
+    supportsNode(node:ts.Node):boolean {
         return node.kind === ts.SyntaxKind.ConstructorType;
     }
-    createType(node: ts.Node, context: Context, reference?: ReferenceType): BaseType | undefined {
-        return new StringType(); // Treat constructors as strings in this example
+    createType(
+        node:ts.Node,
+        context:Context,
+        reference?:ReferenceType
+    ):BaseType|undefined {
+        return new StringType();  // Treat constructors as strings
     }
 }
 ```
 
-2. Then we add the parser as a child to the core parser using the augmentation callback:
+2. Then we add the parser as a child to the core parser using the
+   augmentation callback:
 
 ```ts
-import { createProgram, createParser, SchemaGenerator, createFormatter } from "ts-json-schema-generator";
+import {
+    createProgram,
+    createParser,
+    SchemaGenerator,
+    createFormatter
+} from "@rebase-blog/ts-json-schema-generator";
 import { MyConstructorParser } from "./my-constructor-parser.ts";
 import fs from "fs";
 
 const config = {
     path: "path/to/source/file",
     tsconfig: "path/to/tsconfig.json",
-    type: "*", // Or <type-name> if you want to generate schema for that one type only
+    type: "*", // Or <type-name> to generate schema for that one type only
 };
 
 const program = createProgram(config);
@@ -239,11 +292,15 @@ fs.writeFile(outputPath, schemaString, (err) => {
 
 ## Run locally
 
-`npm run --silent run -- --path 'test/valid-data/type-mapped-array/*.ts' --type 'MyObject'`
+```sh
+npm run --silent run -- --path 'test/valid-data/type-mapped-array/*.ts' --type 'MyObject'
+```
 
 ## Debug
 
-`npm run --silent debug -- --path 'test/valid-data/type-mapped-array/*.ts' --type 'MyObject'`
+```sh
+npm run --silent debug -- --path 'test/valid-data/type-mapped-array/*.ts' --type 'MyObject'
+```
 
 And connect via the debugger protocol.
 
@@ -251,9 +308,13 @@ And connect via the debugger protocol.
 
 ## Publish
 
-Publishing is handled by a 2-branch [pre-release process](https://intuit.github.io/auto/docs/generated/shipit#next-branch-default), configured in `publish-auto.yml`. All changes should be based off the default `next` branch, and are published automatically.
+Publish with `npm version`. The npm lifecycle hooks do the rest:
 
-- PRs made into the default branch are auto-deployed to the `next` pre-release tag on NPM. The result can be installed with `npm install ts-json-schema-generator@next`
-    - When merging into `next`, please use the `squash and merge` strategy.
-- To release a new stable version, open a PR from `next` into `stable` using this [compare link](https://github.com/vega/ts-json-schema-generator/compare/stable...next).
-    - When merging from `next` into `stable`, please use the `create a merge commit` strategy.
+1. `preversion` runs the linter.
+2. `version` updates the README table of contents and `CHANGELOG.md`.
+3. `postversion` pushes the commit and tag, then runs `npm publish`.
+4. `prepublishOnly` builds `dist` before the package is published.
+
+```sh
+npm version patch  # or minor, major
+```

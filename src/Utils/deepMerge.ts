@@ -1,7 +1,7 @@
-import type { JSONSchema7Definition } from "json-schema";
-import type { Definition } from "../Schema/Definition.js";
-import type { RawType } from "../Schema/RawType.js";
-import { intersectionOfArrays } from "./intersectionOfArrays.js";
+import type { JSONSchema7Definition } from 'json-schema'
+import type { Definition } from '../Schema/Definition.js'
+import type { RawType } from '../Schema/RawType.js'
+import { intersectionOfArrays } from './intersectionOfArrays.js'
 
 /**
  * Merges nested objects and arrays.
@@ -11,52 +11,55 @@ import { intersectionOfArrays } from "./intersectionOfArrays.js";
  * @param intersectArrays - compute intersection of arrays (otherwise take the array from b).
  * @returns a and b merged together.
  */
-export function deepMerge(
-    a: { [key: string]: JSONSchema7Definition },
-    b: { [key: string]: JSONSchema7Definition },
-): { [x: string]: JSONSchema7Definition } {
-    const output = { ...structuredClone(a), ...structuredClone(b) };
+export function deepMerge (
+    a:{ [key:string]:JSONSchema7Definition },
+    b:{ [key:string]:JSONSchema7Definition },
+):{ [x:string]:JSONSchema7Definition } {
+    const output = { ...structuredClone(a), ...structuredClone(b) }
 
     for (const key in a) {
         if (b.hasOwnProperty(key)) {
-            const elementA = a[key as keyof Definition];
-            const elementB = b[key as keyof Definition];
+            const elementA = a[key as keyof Definition]
+            const elementB = b[key as keyof Definition]
 
             if (
                 elementA != null &&
                 elementB != null &&
-                typeof elementA === "object" &&
-                typeof elementB === "object" &&
-                "type" in elementA &&
-                "type" in elementB
+                typeof elementA === 'object' &&
+                typeof elementB === 'object' &&
+                'type' in elementA &&
+                'type' in elementB
             ) {
+                // Loose equality is intentional: `type` may be a string or
+                // an array, and `["x"] == "x"` is true.
+                // eslint-disable-next-line eqeqeq
                 if (elementA.type == elementB.type) {
-                    const enums = mergeConstsAndEnums(elementA, elementB);
+                    const enums = mergeConstsAndEnums(elementA, elementB)
                     if (enums != null) {
                         const isSingle = enums.length === 1;
-                        (output as any)[key][isSingle ? "const" : "enum"] = isSingle ? enums[0] : enums;
-                        delete (output as any)[key][isSingle ? "enum" : "const"];
+                        (output as any)[key][isSingle ? 'const' : 'enum'] = isSingle ? enums[0] : enums
+                        delete (output as any)[key][isSingle ? 'enum' : 'const']
                     }
                 }
             }
         }
     }
 
-    return output;
+    return output
 }
 
-function mergeConstsAndEnums(a: Definition, b: Definition): RawType[] | undefined {
+function mergeConstsAndEnums (a:Definition, b:Definition):RawType[]|undefined {
     // NOTE: const is basically a syntactic sugar for an enum with a single element.
-    const enumA = a.const !== undefined ? [a.const] : a.enum;
-    const enumB = b.const !== undefined ? [b.const] : b.enum;
+    const enumA = a.const !== undefined ? [a.const] : a.enum
+    const enumB = b.const !== undefined ? [b.const] : b.enum
 
     if (enumA == null && enumB != null) {
-        return enumB;
+        return enumB
     } else if (enumA != null && enumB == null) {
-        return enumA;
+        return enumA
     } else if (enumA != null && enumB != null) {
-        return intersectionOfArrays(enumA, enumB);
+        return intersectionOfArrays(enumA, enumB)
     } else {
-        return undefined;
+        return undefined
     }
 }

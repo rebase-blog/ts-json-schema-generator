@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
+    "rootDir": ".",
     "target": "ES2022",
-    "module": "Node16",
-    "moduleResolution": "node16",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "esModuleInterop": true,
     "isolatedModules": false,
     "experimentalDecorators": true,
@@ -21,9 +22,7 @@
     "pretty": true,
     "typeRoots": ["node_modules/@types"],
     "types": ["node"],
-    "rootDir": ".",
     "outDir": "dist",
-    "incremental": true,
     "importHelpers": true
   },
   "files": ["ts-json-schema-generator.ts", "index.ts"],

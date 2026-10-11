@@ -1,35 +1,35 @@
-import type ts from "typescript";
-import { BaseType } from "./BaseType.js";
-import type { ObjectType } from "./ObjectType.js";
+import type ts from 'typescript'
+import { BaseType } from './BaseType.js'
+import type { ObjectType } from './ObjectType.js'
 
 export class FunctionType extends BaseType {
-    private comment: string | undefined;
+    private comment:string|undefined
 
-    constructor(
-        node?: ts.FunctionTypeNode | ts.FunctionExpression | ts.FunctionDeclaration | ts.ArrowFunction,
-        protected namedArguments?: ObjectType,
-        protected returnType?: BaseType,
+    constructor (
+        node?:ts.FunctionTypeNode|ts.FunctionExpression|ts.FunctionDeclaration|ts.ArrowFunction,
+        protected namedArguments?:ObjectType,
+        protected returnType?:BaseType,
     ) {
-        super();
+        super()
 
         if (node) {
-            this.comment = `(${node.parameters.map((p) => p.getFullText()).join(",")}) =>${node.type?.getFullText()}`;
+            this.comment = `(${node.parameters.map((p) => p.getFullText()).join(',')}) =>${node.type?.getFullText()}`
         }
     }
 
-    public getId(): string {
-        return "function";
+    public getId ():string {
+        return 'function'
     }
 
-    public getComment(): string | undefined {
-        return this.comment;
+    public getComment ():string|undefined {
+        return this.comment
     }
 
-    public getNamedArguments(): ObjectType | undefined {
-        return this.namedArguments;
+    public getNamedArguments ():ObjectType|undefined {
+        return this.namedArguments
     }
 
-    public getReturnType(): BaseType | undefined {
-        return this.returnType;
+    public getReturnType ():BaseType|undefined {
+        return this.returnType
     }
 }
