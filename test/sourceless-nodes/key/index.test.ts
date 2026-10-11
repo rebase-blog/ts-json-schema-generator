@@ -1,6 +1,6 @@
 import path from "path";
 import ts from "typescript";
-import { createParser } from "../../../factory";
+import { createParser } from "../../../factory/index.js";
 import { Context } from "../../../src/NodeParser.js";
 import { DefinitionType } from "../../../src/Type/DefinitionType.js";
 import { ObjectType } from "../../../src/Type/ObjectType.js";
@@ -8,7 +8,7 @@ import { DEFAULT_CONFIG } from "../../../src/Config.js";
 import { describe, it } from "node:test";
 import assert from "node:assert";
 
-const SOURCE = path.resolve(__dirname, "./source.ts");
+const SOURCE = path.resolve(import.meta.dirname, "./source.ts");
 
 describe("multiple sourceless nodes shouldn't conflict", () => {
     it("ensure all sourceless nodes have different ids", () => {

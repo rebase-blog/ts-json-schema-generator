@@ -1,5 +1,5 @@
 {
-  "name": "ts-json-schema-generator",
+  "name": "@rebase-blog/ts-json-schema-generator",
   "version": "2.0.0",
   "description": "Generate JSON schema from your Typescript sources",
   "keywords": [
@@ -11,7 +11,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vega/ts-json-schema-generator.git"
+    "url": "git+https://github.com/rebase-blog/ts-json-schema-generator.git"
   },
   "license": "MIT",
   "author": {
@@ -28,33 +28,41 @@
       "email": "mooyoul@gmail.com"
     }
   ],
-  "type": "commonjs",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./*": [
+      "./dist/*.js",
+      "./dist/*"
+    ]
+  },
   "bin": {
     "ts-json-schema-generator": "bin/ts-json-schema-generator.js"
   },
   "files": [
-    "dist",
-    "src",
-    "factory",
-    "index.*",
-    "ts-json-schema-generator.*"
+    "./dist/*",
+    "./bin/*"
   ],
   "scripts": {
-    "build": "tsc",
+    "build-esm": "tsc",
+    "build": "mkdir -p ./dist && rm -rf ./dist/* && npm run build-esm",
     "debug": "tsx --inspect-brk ts-json-schema-generator.ts",
     "format": "eslint --fix",
     "lint": "eslint",
-    "prepublishOnly": "npm run build",
-    "release": "npm run build && auto shipit",
     "run": "tsx ts-json-schema-generator.ts",
     "test": "tsx --test \"test/**/*.test.ts\"",
     "test:debug": "tsx --inspect-brk --test-concurrency=1 --test",
     "test:fast": "cross-env FAST_TEST=1 tsx --test \"test/**/*.test.ts\"",
     "test:update": "cross-env FAST_TEST=1 UPDATE_SCHEMA=true tsx --test \"test/**/*.test.ts\"",
     "test:coverage": "c8 --reporter lcov --reporter text tsx --test \"test/**/*.test.ts\"",
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "toc": "markdown-toc --maxdepth 3 -i README.md",
+    "preversion": "npm run lint",
+    "version": "npm run toc && auto-changelog -p --template keepachangelog --breaking-pattern \"BREAKING CHANGE:\" && git add CHANGELOG.md README.md",
+    "postversion": "git push --follow-tags && npm publish",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@types/json-schema": "^7.0.15",
@@ -67,8 +75,6 @@
     "typescript": ">=5.9 <7"
   },
   "devDependencies": {
-    "@auto-it/conventional-commits": "^11.3.6",
-    "@auto-it/first-time-contributor": "^11.3.6",
     "@eslint/js": "^10.0.1",
     "@types/eslint": "^9.6.1",
     "@types/node": "^26.0.1",
@@ -76,13 +82,14 @@
     "@typescript/vfs": "1.6.4",
     "ajv": "^8.18.0",
     "ajv-formats": "^3.0.1",
-    "auto": "^11.3.6",
+    "auto-changelog": "^2.7.0",
     "c8": "^11.0.0",
     "cross-env": "^10.1.0",
     "eslint": "10.11.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
     "globals": "^17.4.0",
+    "markdown-toc": "^1.2.0",
     "prettier": "^3.8.1",
     "try": "^1.0.3",
     "tsx": "^4.21.0",
@@ -92,8 +99,7 @@
   },
   "packageManager": "npm@11.12.1",
   "publishConfig": {
-    "access": "public",
-    "provenance": true
+    "access": "public"
   },
   "engines": {
     "node": ">=22.0.0"

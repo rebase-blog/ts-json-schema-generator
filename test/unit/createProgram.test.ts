@@ -2,7 +2,7 @@ import assert from "node:assert";
 import fs from "node:fs";
 import path from "node:path";
 import { describe, it } from "node:test";
-import { createProgram } from "../../factory/program";
+import { createProgram } from "../../factory/program.js";
 import { DEFAULT_CONFIG } from "../../src/Config.js";
 
 describe("createProgram", () => {

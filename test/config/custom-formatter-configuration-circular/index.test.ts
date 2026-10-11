@@ -1,11 +1,11 @@
 import { it } from "node:test";
-import type { BaseType } from "../../../index";
-import { DefinitionType } from "../../../index";
-import type { Definition } from "../../../src/Schema/Definition";
-import type { SubTypeFormatter } from "../../../src/SubTypeFormatter";
-import type { TypeFormatter } from "../../../src/TypeFormatter";
-import { uniqueArray } from "../../../src/Utils/uniqueArray";
-import { assertConfigSchema } from "../../utils";
+import type { BaseType } from "../../../index.js";
+import { DefinitionType } from "../../../index.js";
+import type { Definition } from "../../../src/Schema/Definition.js";
+import type { SubTypeFormatter } from "../../../src/SubTypeFormatter.js";
+import type { TypeFormatter } from "../../../src/TypeFormatter.js";
+import { uniqueArray } from "../../../src/Utils/uniqueArray.js";
+import { assertConfigSchema } from "../../utils.js";
 
 // Just like DefinitionFormatter but adds { $comment: "overriden" }
 class ExampleDefinitionOverrideFormatter implements SubTypeFormatter {

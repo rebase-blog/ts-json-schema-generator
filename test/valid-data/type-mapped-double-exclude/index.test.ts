@@ -1,4 +1,4 @@
-import { assertValidSchema } from "../../utils";
+import { assertValidSchema } from "../../utils.js";
 import { test } from "node:test";
 
 test("valid-data - type-mapped-double-exclude", assertValidSchema("type-mapped-double-exclude", "MyObject"));

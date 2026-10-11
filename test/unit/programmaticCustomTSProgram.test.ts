@@ -2,8 +2,8 @@ import { createFSBackedSystem, createVirtualTypeScriptEnvironment } from "@types
 import assert from "node:assert";
 import { it } from "node:test";
 import ts from "typescript";
-import { createGenerator } from "../../factory/generator";
-import type { Config } from "../../src/Config";
+import { createGenerator } from "../../factory/generator.js";
+import type { Config } from "../../src/Config.js";
 
 it("Can generate a schema from a vfs", () => {
     const tsInterface = `
@@ -20,7 +20,7 @@ it("Can generate a schema from a vfs", () => {
     fsMap.set("/schema.ts", tsInterface);
 
     // The FS backed API means that it will use the node_modules for lib.d.ts lookups
-    const system = createFSBackedSystem(fsMap, __dirname, ts);
+    const system = createFSBackedSystem(fsMap, import.meta.dirname, ts);
     const env = createVirtualTypeScriptEnvironment(system, ["/schema.ts"], ts);
     const program = env.languageService.getProgram();
     if (!program) throw new Error("No program");

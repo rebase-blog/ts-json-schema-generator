@@ -1,4 +1,4 @@
-import { getFullDescription } from "../../src/Utils/getFullDescription";
+import { getFullDescription } from "../../src/Utils/getFullDescription.js";
 import ts from "typescript";
 import { describe, it } from "node:test";
 import assert from "node:assert";

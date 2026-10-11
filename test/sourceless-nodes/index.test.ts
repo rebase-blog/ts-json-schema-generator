@@ -1,6 +1,6 @@
 import path from "path";
 import ts from "typescript";
-import { createParser } from "../../factory";
+import { createParser } from "../../factory/index.js";
 import { Context } from "../../src/NodeParser.js";
 import { LiteralType } from "../../src/Type/LiteralType.js";
 import { NumberType } from "../../src/Type/NumberType.js";
@@ -9,7 +9,7 @@ import { DEFAULT_CONFIG } from "../../src/Config.js";
 import { describe, it } from "node:test";
 import assert from "node:assert";
 
-const SOURCE = path.resolve(__dirname, "./source.ts");
+const SOURCE = path.resolve(import.meta.dirname, "./source.ts");
 
 describe("sourceless-nodes", () => {
     it("tests creating json schemas with ts.Nodes without valid source files", () => {

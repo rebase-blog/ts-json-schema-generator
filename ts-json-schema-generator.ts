@@ -7,7 +7,7 @@ import { createGenerator } from "./factory/generator.js";
 import type { Config } from "./src/Config.js";
 import { BaseError } from "./src/Error/BaseError.js";
 
-import pkg from "./package.json";
+import pkg from "./package.json" with { type: "json" };
 
 const args = new Command()
     .option("-p, --path <path>", "Source file path")

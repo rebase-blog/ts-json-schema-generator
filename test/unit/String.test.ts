@@ -1,5 +1,5 @@
 import assert from "node:assert";
-import { strip } from "../../src/Utils/String";
+import { strip } from "../../src/Utils/String.js";
 import { describe, it } from "node:test";
 
 describe("strip", () => {

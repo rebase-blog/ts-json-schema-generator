@@ -1,12 +1,9 @@
-/*.ts
-coverage/
-dist/
-cjs/
-node_modules/
-!auto.config.ts
+node_modules
+.DS_Store
+src/*.js
+dist
+coverage
 /.idea/
-
-# local config for auto
 .env
 
 # Other package managers

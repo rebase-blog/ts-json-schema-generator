@@ -1,6 +1,6 @@
 import type { Options as AjvOptions } from "ajv";
-import Ajv from "ajv";
-import addFormats from "ajv-formats";
+import { Ajv } from "ajv";
+import ajvFormats from "ajv-formats";
 import assert from "node:assert";
 import fs from "node:fs";
 import path from "node:path";
@@ -8,16 +8,19 @@ import type { TestFn } from "node:test";
 import stringify from "safe-stable-stringify";
 import { t } from "try";
 import type ts from "typescript";
-import type { FormatterAugmentor } from "../factory/formatter";
-import { createFormatter } from "../factory/formatter";
+import type { FormatterAugmentor } from "../factory/formatter.js";
+import { createFormatter } from "../factory/formatter.js";
 import { createGenerator } from "../factory/generator.js";
-import type { ParserAugmentor } from "../factory/parser";
-import { createParser } from "../factory/parser";
-import { createProgram } from "../factory/program";
+import type { ParserAugmentor } from "../factory/parser.js";
+import { createParser } from "../factory/parser.js";
+import { createProgram } from "../factory/program.js";
 import type { CompletedConfig, Config } from "../src/Config.js";
 import { DEFAULT_CONFIG } from "../src/Config.js";
 import { BaseError } from "../src/Error/BaseError.js";
 import { SchemaGenerator } from "../src/SchemaGenerator.js";
+
+// ajv-formats is CommonJS; under ESM its default export is the module object
+const addFormats = ajvFormats.default;
 
 const validator = new Ajv({ discriminator: true });
 addFormats(validator);

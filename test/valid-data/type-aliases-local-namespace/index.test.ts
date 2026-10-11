@@ -1,4 +1,4 @@
-import { assertValidSchema } from "../../utils";
+import { assertValidSchema } from "../../utils.js";
 import { test } from "node:test";
 
 test("valid-data - type-aliases-local-namespace", assertValidSchema("type-aliases-local-namespace", "MyObject"));

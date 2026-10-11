@@ -3,7 +3,7 @@ import path from "path";
 import { describe, it } from "node:test";
 import assert from "assert";
 
-const SCHEMA_PATH = path.resolve(__dirname, "./schema.ts");
+const SCHEMA_PATH = path.resolve(import.meta.dirname, "./schema.ts");
 
 const EXPECTED = {
     $ref: "#/definitions/Schema",

@@ -1,5 +1,5 @@
 import { it } from "node:test";
-import { assertInvalidSchema } from "../../utils";
+import { assertInvalidSchema } from "../../utils.js";
 
 it("invalid-data - duplicates", assertInvalidSchema("duplicates", "MyType", `Type "A" has multiple definitions.`));
 it(

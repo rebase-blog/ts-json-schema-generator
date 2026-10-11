@@ -1,9 +1,9 @@
 import { it } from "node:test";
-import type { BaseType } from "../../../index";
-import { EnumType } from "../../../src/Type/EnumType";
-import type { Definition } from "../../../src/Schema/Definition";
-import type { SubTypeFormatter } from "../../../src/SubTypeFormatter";
-import { assertConfigSchema } from "../../utils";
+import type { BaseType } from "../../../index.js";
+import { EnumType } from "../../../src/Type/EnumType.js";
+import type { Definition } from "../../../src/Schema/Definition.js";
+import type { SubTypeFormatter } from "../../../src/SubTypeFormatter.js";
+import { assertConfigSchema } from "../../utils.js";
 
 class ExampleEnumTypeFormatter implements SubTypeFormatter {
     public supportsType(type: BaseType): boolean {

@@ -1,9 +1,9 @@
 import { it } from "node:test";
-import type { BaseType } from "../../../index";
-import { FunctionType } from "../../../src/Type/FunctionType";
-import type { Definition } from "../../../src/Schema/Definition";
-import type { SubTypeFormatter } from "../../../src/SubTypeFormatter";
-import { assertConfigSchema } from "../../utils";
+import type { BaseType } from "../../../index.js";
+import { FunctionType } from "../../../src/Type/FunctionType.js";
+import type { Definition } from "../../../src/Schema/Definition.js";
+import type { SubTypeFormatter } from "../../../src/SubTypeFormatter.js";
+import { assertConfigSchema } from "../../utils.js";
 
 class ExampleFunctionTypeFormatter implements SubTypeFormatter {
     public supportsType(type: BaseType): boolean {

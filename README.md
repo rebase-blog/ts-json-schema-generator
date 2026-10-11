@@ -1,8 +1,7 @@
 # ts-json-schema-generator
 
-![Test](https://github.com/vega/ts-json-schema-generator/workflows/Test/badge.svg)
-[![codecov](https://codecov.io/gh/vega/ts-json-schema-generator/branch/master/graph/badge.svg)](https://codecov.io/gh/vega/ts-json-schema-generator)
-[![npm version](https://img.shields.io/npm/v/ts-json-schema-generator.svg)](https://www.npmjs.com/package/ts-json-schema-generator)
+![tests](https://github.com/rebase-blog/ts-json-schema-generator/actions/workflows/nodejs.yml/badge.svg)
+[![npm version](https://img.shields.io/npm/v/@rebase-blog/ts-json-schema-generator.svg)](https://www.npmjs.com/package/@rebase-blog/ts-json-schema-generator)
 
 Extended version of [https://github.com/xiag-ag/typescript-to-json-schema](https://github.com/xiag-ag/typescript-to-json-schema).
 
@@ -21,13 +20,13 @@ This project is made possible by a [community of contributors](https://github.co
 Run the schema generator with npx:
 
 ```bash
-npx ts-json-schema-generator --path 'my/project/**/*.ts' --type 'My.Type.Name'
+npx @rebase-blog/ts-json-schema-generator --path 'my/project/**/*.ts' --type 'My.Type.Name'
 ```
 
 Or install the package and then run it
 
 ```bash
-npm install --save ts-json-schema-generator
+npm install --save @rebase-blog/ts-json-schema-generator
 ./node_modules/.bin/ts-json-schema-generator --path 'my/project/**/*.ts' --type 'My.Type.Name'
 ```
 
@@ -66,12 +65,12 @@ By default, the command-line generator will use the `tsconfig.json` file in the 
 ## Programmatic Usage
 
 ```js
-// main.js
+// main.mjs
 
-const tsj = require("ts-json-schema-generator");
-const fs = require("fs");
+import * as tsj from "@rebase-blog/ts-json-schema-generator";
+import fs from "node:fs";
 
-/** @type {import('ts-json-schema-generator/dist/src/Config').Config} */
+/** @type {import('@rebase-blog/ts-json-schema-generator').Config} */
 const config = {
     path: "path/to/source/file",
     tsconfig: "path/to/tsconfig.json",
@@ -87,7 +86,7 @@ fs.writeFile(outputPath, schemaString, (err) => {
 });
 ```
 
-Run the schema generator via `node main.js`.
+Run the schema generator via `node main.mjs`.
 
 ### Custom formatting
 
@@ -97,7 +96,7 @@ Extending the built-in formatting is possible by creating a custom formatter and
 
 ```ts
 // my-function-formatter.ts
-import { BaseType, Definition, FunctionType, SubTypeFormatter } from "ts-json-schema-generator";
+import { BaseType, Definition, FunctionType, SubTypeFormatter } from "@rebase-blog/ts-json-schema-generator";
 import ts from "typescript";
 
 export class MyFunctionTypeFormatter implements SubTypeFormatter {
@@ -137,7 +136,7 @@ export class MyFunctionTypeFormatter implements SubTypeFormatter {
 2. Then we add the formatter as a child to the core formatter using the augmentation callback:
 
 ```ts
-import { createProgram, createParser, SchemaGenerator, createFormatter } from "ts-json-schema-generator";
+import { createProgram, createParser, SchemaGenerator, createFormatter } from "@rebase-blog/ts-json-schema-generator";
 import { MyFunctionTypeFormatter } from "./my-function-formatter.ts";
 import fs from "fs";
 
@@ -175,9 +174,9 @@ Similar to custom formatting, extending the built-in parsing works practically t
 
 ```ts
 // my-constructor-parser.ts
-import { Context, StringType, ReferenceType, BaseType, SubNodeParser } from "ts-json-schema-generator";
+import { Context, StringType, ReferenceType, BaseType, SubNodeParser } from "@rebase-blog/ts-json-schema-generator";
 // use typescript exported by TJS to avoid version conflict
-import ts from "ts-json-schema-generator";
+import ts from "@rebase-blog/ts-json-schema-generator";
 
 export class MyConstructorParser implements SubNodeParser {
     supportsNode(node: ts.Node): boolean {
@@ -192,7 +191,7 @@ export class MyConstructorParser implements SubNodeParser {
 2. Then we add the parser as a child to the core parser using the augmentation callback:
 
 ```ts
-import { createProgram, createParser, SchemaGenerator, createFormatter } from "ts-json-schema-generator";
+import { createProgram, createParser, SchemaGenerator, createFormatter } from "@rebase-blog/ts-json-schema-generator";
 import { MyConstructorParser } from "./my-constructor-parser.ts";
 import fs from "fs";
 
@@ -251,9 +250,13 @@ And connect via the debugger protocol.
 
 ## Publish
 
-Publishing is handled by a 2-branch [pre-release process](https://intuit.github.io/auto/docs/generated/shipit#next-branch-default), configured in `publish-auto.yml`. All changes should be based off the default `next` branch, and are published automatically.
+Publish with `npm version`. The npm lifecycle hooks do the rest:
 
-- PRs made into the default branch are auto-deployed to the `next` pre-release tag on NPM. The result can be installed with `npm install ts-json-schema-generator@next`
-    - When merging into `next`, please use the `squash and merge` strategy.
-- To release a new stable version, open a PR from `next` into `stable` using this [compare link](https://github.com/vega/ts-json-schema-generator/compare/stable...next).
-    - When merging from `next` into `stable`, please use the `create a merge commit` strategy.
+1. `preversion` runs the linter.
+2. `version` updates the README table of contents and `CHANGELOG.md`.
+3. `postversion` pushes the commit and tag, then runs `npm publish`.
+4. `prepublishOnly` builds `dist` before the package is published.
+
+```sh
+npm version patch  # or minor, major
+```

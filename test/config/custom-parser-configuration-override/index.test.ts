@@ -1,8 +1,8 @@
 import { it } from "node:test";
 import ts from "typescript";
-import type { BaseType, Context, ReferenceType, SubNodeParser } from "../../../index";
-import { StringType } from "../../../src/Type/StringType";
-import { assertConfigSchema } from "../../utils";
+import type { BaseType, Context, ReferenceType, SubNodeParser } from "../../../index.js";
+import { StringType } from "../../../src/Type/StringType.js";
+import { assertConfigSchema } from "../../utils.js";
 
 class ExampleNullParser implements SubNodeParser {
     supportsNode(node: ts.Node): boolean {

@@ -1,5 +1,5 @@
 import { it } from "node:test";
-import { assertConfigSchema } from "../../utils";
+import { assertConfigSchema } from "../../utils.js";
 
 it(
     "config - expose-all-topref-false-not-exported",
